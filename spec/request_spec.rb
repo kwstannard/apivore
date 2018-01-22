@@ -1,7 +1,8 @@
 require 'spec_helper'
+require 'pry'
 
 describe "Example API", type: [:request, :apivore], order: :defined do
-  subject { Apivore::SwaggerChecker.instance_for("/swagger-doc.json") }
+  subject { Apivore.from_file(Pathname(__FILE__).parent.join('data', '01_sample2.0.json')) }
 
   context "has valid paths" do
     it 'allows the same path (with response documented) to be tested twice' do

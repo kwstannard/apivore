@@ -1,9 +1,11 @@
 module Apivore
   class SwaggerChecker
-    PATH_TO_CHECKER_MAP = {}
+    #PATH_TO_CHECKER_MAP = {}
+
 
     def self.instance_for(path)
-      PATH_TO_CHECKER_MAP[path] ||= new(path)
+      raise "Apivore has been overwritten, please use `.new` directly by passing swagger #{__FILE__}"
+      #PATH_TO_CHECKER_MAP[path] ||= new(path)
     end
 
     def has_path?(path)
@@ -59,9 +61,8 @@ module Apivore
 
     attr_reader :mappings
 
-    def initialize(swagger_path)
-      @swagger_path = swagger_path
-      load_swagger_doc!
+    def initialize(swagger)
+      @swagger = swagger
       validate_swagger!
       setup_mappings!
     end
