@@ -14,7 +14,7 @@ describe 'Apivore::Swagger' do
     it { should respond_to(:base_path) }
 
     describe 'swagger version' do
-      subject { swagger.version }
+      subject { swagger.version.to_s }
       it { should == '2.0' }
     end
 

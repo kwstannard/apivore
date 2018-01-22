@@ -7,9 +7,10 @@ module Apivore
     NONVERB_PATH_ITEMS = %q(parameters)
 
     def validate
-      case version
-      when '2.0'
-        schema = File.read(File.expand_path("../../../data/swagger_2.0_schema.json", __FILE__))
+      if (Gem::Version.new('3.0')...Gem::Version.new('4.0')).cover?(version)
+        schema = YAML.load_file(File.expand_path("../../../data/openapi_3.0_schema.yaml", __FILE__))
+      elsif (Gem::Version.new('2.0')...Gem::Version.new('3.0')).cover?(version)
+        schema = JSON.parse(File.read(File.expand_path("../../../data/swagger_2.0_schema.json", __FILE__)))
       else
         raise "Unknown/unsupported Swagger version to validate against: #{version}"
       end
@@ -17,7 +18,7 @@ module Apivore
     end
 
     def version
-      swagger
+      @version ||= Gem::Version.new(swagger || openapi)
     end
 
     def base_path
