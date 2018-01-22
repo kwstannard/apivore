@@ -19,9 +19,10 @@ module Apivore
   @loaded_checkers_by_path = {}
   @loaded_checkers_by_route = {}
 
-  def self.from_file(path)
+  def self.from_file(path, validation_options: {})
     @loaded_checkers_by_path[path] ||=
-      SwaggerChecker.new(Apivore::Swagger.new(YAML.load_file(path)))
+      SwaggerChecker.new(Apivore::Swagger.new(YAML.load_file(path)),
+                         validation_options: validation_options)
   end
 
   def self.from_route(route)
