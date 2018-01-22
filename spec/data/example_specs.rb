@@ -62,7 +62,7 @@ context "API testing scenarios" do
     end
   end
 
-  describe "fails custom validation" do
+  describe "fails custom validation", type: :request do
     subject { Apivore::SwaggerChecker.instance_for("/08_untyped_definition.json") }
     it "passes" do
       expect(subject).to validate(:get, "/services.json", 200)

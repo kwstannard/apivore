@@ -4,22 +4,21 @@ require 'apivore/rails_shim'
 
 module Apivore
   class Validator
-    include ::ActionDispatch::Integration::Runner
+    attr_reader :method, :path, :expected_response_code, :params, :api_runner, :response
 
-    attr_reader :method, :path, :expected_response_code, :params
-
-    def initialize(method, path, expected_response_code, params = {})
+    def initialize(method, path, expected_response_code, params, api_runner)
       @method = method.to_s
       @path = path.to_s
       @params = params
       @expected_response_code = expected_response_code.to_i
+      @api_runner = api_runner
     end
 
     def matches?(swagger_checker)
       pre_checks(swagger_checker)
 
       unless has_errors?
-        send(
+        api_runner.send(
           method,
           *RailsShim.action_dispatch_request_args(
             full_path(swagger_checker),
@@ -27,6 +26,7 @@ module Apivore
             headers: params['_headers'] || {}
           )
         )
+        @response = api_runner.response
         swagger_checker.response = response
         post_checks(swagger_checker)
 
@@ -127,15 +127,6 @@ module Apivore
 
     def description
       "validate that #{method} #{path} returns #{expected_response_code}"
-    end
-
-    # Required by ActionDispatch::Integration::Runner
-    def app
-      ::Rails.application
-    end
-
-    # Required by rails
-    def reset_template_assertion
     end
   end
 end

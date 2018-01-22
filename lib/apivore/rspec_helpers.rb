@@ -5,7 +5,7 @@ require 'apivore/custom_schema_validator'
 module Apivore
   module RspecHelpers
     def validate(method, path, response_code, params = {})
-      Validator.new(method, path, response_code, params)
+      Validator.new(method, path, response_code, params, self)
     end
 
     def conform_to(custom_schema)
