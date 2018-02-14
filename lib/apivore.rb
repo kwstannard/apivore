@@ -15,6 +15,13 @@ draft04 = JSON.parse(File.read(File.expand_path("../../data/draft04_schema.json"
 draft04_schema = JSON::Schema.new(draft04, Addressable::URI.parse('http://json-schema.org/draft-04/schema#'))
 JSON::Validator.add_schema(draft04_schema)
 
+date_format_proc = ->(val) {
+  if val != val.to_date.strftime('%Y-%m-%d')
+    raise JSON::Schema::CustomFormatError 'format must be YYYY-MM-DD'
+  end
+}
+JSON::Validator.register_format_validator("date", date_format_proc)
+
 module Apivore
   @loaded_checkers_by_path = {}
   @loaded_checkers_by_route = {}
